@@ -1,0 +1,10 @@
+{
+    "kind": "ImageStream",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "s2i-reveal-js"
+    },
+    "spec": {
+        "dockerImageRepository": "pddevopslab/s2i-reveal-js"
+    }
+}

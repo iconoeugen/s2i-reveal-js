@@ -1,0 +1,47 @@
+#!/bin/bash -e
+#
+# S2I assemble script for the 's2i-reveal-js' image.
+# The 'assemble' script builds your application source so that it is ready to run.
+#
+# For more information refer to the documentation:
+#       https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+if [[ "$1" == "-h" ]]; then
+  # If the 's2i-sphinx-doc' assemble script is executed with '-h' flag,
+  # print the usage.
+  exec /usr/libexec/s2i/usage
+fi
+
+: ${CONTEXT_PATH:=/}
+
+# Restore artifacts from the previous build (if they exist).
+#
+if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
+  echo "---> Restoring build artifacts..."
+  mv /tmp/artifacts/. ./
+fi
+
+echo "---> Installing application source..."
+shopt -s dotglob
+mkdir -p ./${CONTEXT_PATH}
+cp -Rf /tmp/src/. ./${CONTEXT_PATH}
+
+# Fix source directory permissions
+#fix-permissions ./
+# set permissions for any installed artifacts
+#fix-permissions /opt/app-root/src
+
+echo "---> Preparing reveal.js..."
+for f in lib js plugin css package.json node_modules Gruntfile.js ; do
+  ln -s ../reveal.js-${REVEAL_JS_VERSION}/${f} ./${CONTEXT_PATH}/${f}
+done
+#ln -s ../reveal.js-${REVEAL_JS_VERSION}/lib ./${CONTEXT_PATH}/lib
+#ln -s ../reveal.js-${REVEAL_JS_VERSION}/js ./${CONTEXT_PATH}/js
+#ln -s ../reveal.js-${REVEAL_JS_VERSION}/plugin ./${CONTEXT_PATH}/plugin
+#ln -s ../reveal.js-${REVEAL_JS_VERSION}/css ./${CONTEXT_PATH}/css
+#ln -s ../reveal.js-${REVEAL_JS_VERSION}/package.json ./${CONTEXT_PATH}/package.json
+#ln -s ../reveal.js-${REVEAL_JS_VERSION}/node_modules ./${CONTEXT_PATH}/node_modules
+#ln -s ../reveal.js-${REVEAL_JS_VERSION}/Gruntfile.js ./${CONTEXT_PATH}/Gruntfile.js
+
+echo "---> Clean build cache ..."

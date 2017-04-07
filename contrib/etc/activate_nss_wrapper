@@ -1,0 +1,17 @@
+: ${USER:=default}
+
+echo "Activating nss_wrapper with username ${USER}"
+
+export USER_ID=$(id -u)
+export GROUP_ID=$(id -g)
+
+if [ $USER_ID -ne 0 -o $GROUP_ID -ne 0 ]; then
+  export NSS_WRAPPER_PASSWD=/opt/app-root/etc/passwd
+  export NSS_WRAPPER_GROUP=/etc/group
+
+  grep -v "^${USER}:" /etc/passwd >${NSS_WRAPPER_PASSWD}
+  echo  "${USER}:x:${USER_ID}:${GROUP_ID}:Default Application User:${HOME}:/sbin/nologin" >> ${NSS_WRAPPER_PASSWD}
+
+  # below variables are static and should not be changed
+  export LD_PRELOAD=libnss_wrapper.so
+fi
