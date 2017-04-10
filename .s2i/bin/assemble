@@ -33,15 +33,12 @@ cp -Rf /tmp/src/. ./${CONTEXT_PATH}
 #fix-permissions /opt/app-root/src
 
 echo "---> Preparing reveal.js..."
-for f in lib js plugin css package.json node_modules Gruntfile.js ; do
-  ln -s ../reveal.js-${REVEAL_JS_VERSION}/${f} ./${CONTEXT_PATH}/${f}
+for f in package.json node_modules Gruntfile.js ; do
+  [[ ! -f ${f} && ! -L ${f} ]] && ln -s /opt/app-root/reveal.js-${REVEAL_JS_VERSION}/${f} /opt/app-root/src/${f}
 done
-#ln -s ../reveal.js-${REVEAL_JS_VERSION}/lib ./${CONTEXT_PATH}/lib
-#ln -s ../reveal.js-${REVEAL_JS_VERSION}/js ./${CONTEXT_PATH}/js
-#ln -s ../reveal.js-${REVEAL_JS_VERSION}/plugin ./${CONTEXT_PATH}/plugin
-#ln -s ../reveal.js-${REVEAL_JS_VERSION}/css ./${CONTEXT_PATH}/css
-#ln -s ../reveal.js-${REVEAL_JS_VERSION}/package.json ./${CONTEXT_PATH}/package.json
-#ln -s ../reveal.js-${REVEAL_JS_VERSION}/node_modules ./${CONTEXT_PATH}/node_modules
-#ln -s ../reveal.js-${REVEAL_JS_VERSION}/Gruntfile.js ./${CONTEXT_PATH}/Gruntfile.js
+
+for f in lib js plugin css ; do
+  [[ ! -f ${f} && ! -L ${f} ]] && ln -s /opt/app-root/reveal.js-${REVEAL_JS_VERSION}/${f} /opt/app-root/src/${CONTEXT_PATH}/${f}
+done
 
 echo "---> Clean build cache ..."
